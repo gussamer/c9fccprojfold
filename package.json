@@ -1,0 +1,27 @@
+{
+  "name": "c9fccprojfold",
+  "version": "1.0.0",
+  "description": "setup script to create a web application project shell that's npmed, gited and herokud",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gussamer/c9fccprojfold.git"
+  },
+  "keywords": [
+    "cloud9",
+    "freecodecamp",
+    "project"
+  ],
+  "author": "Angus Alves",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/gussamer/c9fccprojfold/issues"
+  },
+  "homepage": "https://github.com/gussamer/c9fccprojfold#readme",
+  "dependencies": {
+    "express": "^4.14.0"
+  }
+}
