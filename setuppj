@@ -6,22 +6,22 @@ fi
 gname=$1
 pname=$2
 desc=$3
-#mkdir $name
-#cd $pname
+mkdir $name
+cd $pname
+echo "node_modules" > .gitignore
+echo "# $pname\n$desc\n" > README.md
+cp ../LICENSE.md LICENSE.md
+cp ../tempserv.js server.js
 npm init
 node ../writenode.js
-echo "node_modules" > .gitignore
-#echo "# $pname\n$desc\n" > README.md
-cp ../LICENSE.md LICENSE.md
+npm install express --save
 curl -u $gname https://api.github.com/user/repos -d '{"name":"'$pname'"}'
 git init
-npm install express --save
-cp ../tempserv.js server.js
 heroku create $pname
 heroku git:remote -a $pname
+git remote add origin https://github.com/$gname/$pname.git
 git add --all
 git commit -m "initial setup commit"
-git remote add origin https://github.com/$gname/$pname.git
 git push -u origin master
-#git push heroku master
-#wget -qO- https://rhpms.herokuapp.com/ | echo "\n"
+git push heroku master
+wget -qO- https://$pname.herokuapp.com/ | echo "\n"
