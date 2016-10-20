@@ -39,14 +39,14 @@ else
 fi
 curl -u $gname https://api.github.com/user/repos -d '{"name":"'$pname'"}'
 git init
-git remote add origin https://github.com/$gname/$pname.git < $gname
+git remote add origin https://github.com/$gname/$pname.git
 git add --all
 git commit -m "initial setup commit"
 git push -u origin master
 echo Setup Heroku app now?
 echo "Y(y)|N(any key not y)"
 read hero
-if [ $hero != "y" ]; then
+if [ $hero == "y" ]; then
     heroku create $pname
     heroku git:remote -a $pname
     git push heroku master
