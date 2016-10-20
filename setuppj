@@ -32,7 +32,7 @@ if [ $t == "node" ]; then
     fi
 elif [ $t == "python" ]; then
     echo "# $pname: $desc" >> $pname.py
-    echo "print 'Hello World" >> $pname.py
+    echo "print 'Hello World'" >> $pname.py
     pip-init
 else
     echo "No type"
