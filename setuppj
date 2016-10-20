@@ -1,36 +1,52 @@
 #!/usr/bin/env bash
-if [ $# -ne 3 ]; then
-    echo $0: usage: setuppj [Github User Name] [Project Name] [Project Description]
+if [ $# -ne 4 ]; then
+    echo "$0: usage: setuppj [Github User Name] [Project Name] [Project Description] [node|python]"
     echo Enter your github user name
     read gname
     echo Enter your new project name
     read pname
     echo "Enter a description for $pname"
     read desc
+    echo "Is $gname a node or python package?(node|python)"
+    read t
 else
     gname=$1
     pname=$2
     desc=$3
+    t=$4
 fi
 mkdir $pname
 cd $pname
-echo "node_modules" > .gitignore
-echo "# $pname\n$desc\n" > README.md
-cp ../LICENSE.md LICENSE.md
-cp ../tempserv.js server.js
-npm init
-node ../writenode.js
-npm install express --save
+echo "# $pname $desc" > README.md
+if [ $t == "node" ]; then
+    echo "node_modules" > .gitignore
+    cp ../LICENSE.md LICENSE.md
+    cp ../tempserv.js server.js
+    npm init
+    node ../writenode.js node
+    echo "Install expressjs?"
+    echo "Y(y)|N(any key not y)"
+    read ex
+    if [ $ex -eq "y" ]; then
+        npm install express --save
+    fi
+elif [ $t == "python" ]; then
+    echo "# $pname: $desc" >> $pname.py
+    echo "print 'Hello World" >> $pname.py
+    pip-init
+else
+    echo "No type"
+fi
 curl -u $gname https://api.github.com/user/repos -d '{"name":"'$pname'"}'
 git init
-git remote add origin https://github.com/$gname/$pname.git
+git remote add origin https://github.com/$gname/$pname.git < $gname
 git add --all
 git commit -m "initial setup commit"
 git push -u origin master
 echo Setup Heroku app now?
-echo "Y(y):N(any key not y)"
+echo "Y(y)|N(any key not y)"
 read hero
-if [$hero != "y"]; then
+if [ $hero != "y" ]; then
     heroku create $pname
     heroku git:remote -a $pname
     git push heroku master
