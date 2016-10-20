@@ -23,11 +23,16 @@ node ../writenode.js
 npm install express --save
 curl -u $gname https://api.github.com/user/repos -d '{"name":"'$pname'"}'
 git init
-heroku create $pname
-heroku git:remote -a $pname
 git remote add origin https://github.com/$gname/$pname.git
 git add --all
 git commit -m "initial setup commit"
 git push -u origin master
-git push heroku master
-wget -qO- https://$pname.herokuapp.com/ | echo "\n"
+echo Setup Heroku app now?
+echo "Y(y):N(any key not y)"
+read hero
+if [$hero != "y"]; then
+    heroku create $pname
+    heroku git:remote -a $pname
+    git push heroku master
+    wget -qO- https://$pname.herokuapp.com/ | echo "\n"
+fi
