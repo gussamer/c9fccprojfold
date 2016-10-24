@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 if [ $# -ne 4 ]; then
     echo "$0: usage: setuppj [Github User Name] [Project Name] [Project Description] [node|python]"
-    echo Enter your github user name
+    echo "[?] Enter your github user name"
     read gname
-    echo Enter your new project name
+    echo "[?] Enter your new project name"
     read pname
-    echo "Enter a description for $pname"
+    echo "[?] Enter a description for $pname"
     read desc
-    echo "Is $gname a node or python package?(node|python)"
+    echo "[?] Is $gname a node or python package?(node|python)"
     read t
 else
     gname=$1
@@ -20,12 +20,12 @@ cd $pname
 echo "# $pname $desc" > README.md
 if [ $t == "node" ]; then
     echo "node_modules" > .gitignore
-    cp ../LICENSE.md LICENSE.md
-    cp ../tempserv.js server.js
+    cp ../templates/LICENSE.md LICENSE.md
+    cp ../templates/tempserv.js server.js
     npm init
-    node ../writenode.js node
-    echo "Install expressjs?"
-    echo "Y(y)|N(any key not y)"
+    node ../scripts/writenode.js
+    echo "[?] Install expressjs?"
+    echo "[*] Y(y)|N(n)"
     read ex
     if [ $ex -eq "y" ]; then
         npm install express --save
@@ -34,17 +34,34 @@ elif [ $t == "python" ]; then
     echo "# $pname: $desc" >> $pname.py
     echo "print 'Hello World'" >> $pname.py
     pip-init
+    python ../scripts/pythonwrastlin.py
 else
-    echo "No type"
+    echo "[!] No type no setup"
 fi
-curl -u $gname https://api.github.com/user/repos -d '{"name":"'$pname'"}'
-git init
-git remote add origin https://github.com/$gname/$pname.git
-git add --all
-git commit -m "initial setup commit"
-git push -u origin master
-echo Setup Heroku app now?
-echo "Y(y)|N(any key not y)"
+echo "[?] Setup git repo now?"
+echo "[*] Y(y)|N(n)"
+read gitit
+if [ $gitit == "y" ]; then
+    git init
+    git add --all
+    echo "[?] Enter commit message (initial setup commit)"
+    echo "[*] Y(y)|N(n)"
+    read $commess
+    if [$commess == ""]; then
+        $commess = "initial setup commit"
+    fi
+    git commit -m $commess
+fi
+echo "[?] Setup github repo now?"
+echo "[*] Y(y)|N(n)"
+read githubit
+if [ $githubit == "y" ]; then
+    curl -u $gname https://api.github.com/user/repos -d '{"name":"'$pname'"}'
+    git remote add origin https://github.com/$gname/$pname.git
+    git push -u origin master
+fi
+echo "[?] Setup Heroku app now?"
+echo "[*] Y(y)|N(n)"
 read hero
 if [ $hero == "y" ]; then
     heroku create $pname
